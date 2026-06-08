@@ -6,7 +6,7 @@ import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Data
-public class user {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
