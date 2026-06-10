@@ -4,6 +4,9 @@ import com.satyam.expensetracker.entity.User;
 import com.satyam.expensetracker.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.satyam.expensetracker.exception.EmailAlreadyExistsException;
+import com.satyam.expensetracker.dto.UserRequestDTO;
+import com.satyam.expensetracker.dto.UserResponseDTO;
+import com.satyam.expensetracker.entity.User;
 
 @Service
 public class UserService {
@@ -14,12 +17,24 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User registerUser(User user) {
+    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
 
-        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if(userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        return userRepository.save(user);
+        User user = new User();
+
+        user.setName(userRequestDTO.getName());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setPassword(userRequestDTO.getPassword());
+
+        User savedUser = userRepository.save(user);
+
+        return new UserResponseDTO(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail()
+        );
     }
 }
