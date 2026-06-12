@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.satyam.expensetracker.exception.EmailAlreadyExistsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.HashMap;
+import com.satyam.expensetracker.exception.InvalidCredentialsException;
 
 import java.util.Map;
 
@@ -38,6 +39,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", ex.getMessage()));
+    }
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(
+            InvalidCredentialsException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("message", ex.getMessage()));
     }
 }

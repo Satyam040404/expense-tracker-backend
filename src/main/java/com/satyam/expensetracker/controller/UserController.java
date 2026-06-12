@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import com.satyam.expensetracker.dto.UserRequestDTO;
 import com.satyam.expensetracker.dto.UserResponseDTO;
 import jakarta.validation.Valid;
+import com.satyam.expensetracker.dto.LoginRequestDTO;
+import com.satyam.expensetracker.dto.LoginResponseDTO;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,5 +23,11 @@ public class UserController {
     public UserResponseDTO registerUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
 
         return userService.registerUser(userRequestDTO);
+    }
+    @PostMapping("/login")
+    public LoginResponseDTO login(
+            @Valid @RequestBody LoginRequestDTO request) {
+
+        return userService.login(request);
     }
 }
