@@ -6,7 +6,9 @@ import com.satyam.expensetracker.repository.ExpenseRepository;
 import com.satyam.expensetracker.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.satyam.expensetracker.exception.ResourceNotFoundException;
-
+import com.satyam.expensetracker.entity.User;
+import com.satyam.expensetracker.repository.UserRepository;
+import com.satyam.expensetracker.security.CurrentUserHolder;
 import java.util.List;
 
 @Service
@@ -20,7 +22,20 @@ public class ExpenseService {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
     }
+    public List<Expense> getMyExpenses() {
 
+        String email = CurrentUserHolder.getEmail();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"));
+
+        return expenseRepository.findByUserId(
+                user.getId()
+        );
+    }
     public Expense addExpense(Long userId, Expense expense) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import com.satyam.expensetracker.security.CurrentUserHolder;
 import java.io.IOException;
 
 @Component
@@ -32,8 +32,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             String email = jwtService.extractEmail(token);
 
+            CurrentUserHolder.setEmail(email);
+
             System.out.println("User Email: " + email);
 
+            System.out.println(
+                    "Stored Email: "
+                            + CurrentUserHolder.getEmail()
+            );
         }
 
         filterChain.doFilter(request, response);
