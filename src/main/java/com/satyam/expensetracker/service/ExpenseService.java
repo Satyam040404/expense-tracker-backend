@@ -36,11 +36,18 @@ public class ExpenseService {
                 user.getId()
         );
     }
-    public Expense addExpense(Long userId, Expense expense) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Expense addExpense(Expense expense) {
+
+        String email = CurrentUserHolder.getEmail();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"));
 
         expense.setUser(user);
+
         return expenseRepository.save(expense);
     }
 

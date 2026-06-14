@@ -16,12 +16,12 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
 
-    @PostMapping("/{userId}")
-    public Expense addExpense(@PathVariable Long userId,
-                              @RequestBody Expense expense) {
-        return expenseService.addExpense(userId, expense);
-    }
+    @PostMapping
+    public Expense addExpense(
+            @RequestBody Expense expense) {
 
+        return expenseService.addExpense(expense);
+    }
     @GetMapping("/{userId}")
     public List<Expense> getExpenses(@PathVariable Long userId) {
         return expenseService.getExpensesByUser(userId);
