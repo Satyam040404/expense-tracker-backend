@@ -3,7 +3,7 @@ package com.satyam.expensetracker.controller;
 import com.satyam.expensetracker.entity.Expense;
 import com.satyam.expensetracker.service.ExpenseService;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -44,5 +44,24 @@ public class ExpenseController {
         expenseService.deleteExpense(expenseId);
 
         return "Expense deleted successfully";
+    }
+    @GetMapping("/summary")
+    public Map<String, Double> getExpenseSummary() {
+
+        return expenseService.getExpenseSummary();
+    }
+    @GetMapping("/category/{category}")
+    public List<Expense> getExpensesByCategory(
+            @PathVariable String category) {
+
+        return expenseService
+                .getExpensesByCategory(category);
+    }
+    @GetMapping("/search")
+    public List<Expense> searchExpenses(
+            @RequestParam String keyword) {
+
+        return expenseService
+                .searchExpenses(keyword);
     }
 }

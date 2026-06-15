@@ -11,6 +11,8 @@ import com.satyam.expensetracker.repository.UserRepository;
 import com.satyam.expensetracker.security.CurrentUserHolder;
 import java.util.List;
 import com.satyam.expensetracker.exception.UnauthorizedException;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class ExpenseService {
@@ -107,5 +109,71 @@ public class ExpenseService {
         }
 
         expenseRepository.delete(expense);
+    }
+    public Map<String, Double> getExpenseSummary() {
+
+        String email = CurrentUserHolder.getEmail();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"));
+
+        List<Object[]> results =
+                expenseRepository.getExpenseSummaryByUser(
+                        user.getId());
+
+        Map<String, Double> summary =
+                new HashMap<>();
+
+        for (Object[] row : results) {
+
+            String category = (String) row[0];
+
+
+            Double total = 0.0;
+
+            if (row[1] != null) {
+                total = ((Number) row[1]).doubleValue();
+            }
+            summary.put(category, total);
+        }
+
+        return summary;
+    }
+    public List<Expense> getExpensesByCategory(
+            String category) {
+
+        String email = CurrentUserHolder.getEmail();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"));
+
+        return expenseRepository
+                .findByUserIdAndCategory(
+                        user.getId(),
+                        category
+                );
+    }
+    public List<Expense> searchExpenses(
+            String keyword) {
+
+        String email = CurrentUserHolder.getEmail();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"));
+
+        return expenseRepository
+                .findByUserIdAndTitleContainingIgnoreCase(
+                        user.getId(),
+                        keyword
+                );
     }
 }
