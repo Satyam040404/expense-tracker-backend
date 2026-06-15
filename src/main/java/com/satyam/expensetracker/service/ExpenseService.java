@@ -10,6 +10,7 @@ import com.satyam.expensetracker.entity.User;
 import com.satyam.expensetracker.repository.UserRepository;
 import com.satyam.expensetracker.security.CurrentUserHolder;
 import java.util.List;
+import com.satyam.expensetracker.exception.UnauthorizedException;
 
 @Service
 public class ExpenseService {
@@ -54,23 +55,56 @@ public class ExpenseService {
     public List<Expense> getExpensesByUser(Long userId) {
         return expenseRepository.findByUserId(userId);
     }
-    public Expense updateExpense(Long expenseId, Expense updatedExpense) {
+    public Expense updateExpense(
+            Long expenseId,
+            Expense updatedExpense) {
 
-        Expense existingExpense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
+        Expense existingExpense = expenseRepository
+                .findById(expenseId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense not found"));
 
-        existingExpense.setTitle(updatedExpense.getTitle());
-        existingExpense.setAmount(updatedExpense.getAmount());
-        existingExpense.setCategory(updatedExpense.getCategory());
-        existingExpense.setDate(updatedExpense.getDate());
-        existingExpense.setDescription(updatedExpense.getDescription());
+        String email = CurrentUserHolder.getEmail();
+
+        if (!existingExpense.getUser()
+                .getEmail()
+                .equals(email)) {
+
+            throw new UnauthorizedException(
+                    "You cannot update this expense");
+        }
+
+        existingExpense.setTitle(
+                updatedExpense.getTitle());
+        existingExpense.setAmount(
+                updatedExpense.getAmount());
+        existingExpense.setCategory(
+                updatedExpense.getCategory());
+        existingExpense.setDate(
+                updatedExpense.getDate());
+        existingExpense.setDescription(
+                updatedExpense.getDescription());
 
         return expenseRepository.save(existingExpense);
     }
     public void deleteExpense(Long expenseId) {
 
-        Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
+        Expense expense = expenseRepository
+                .findById(expenseId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Expense not found"));
+
+        String email = CurrentUserHolder.getEmail();
+
+        if (!expense.getUser()
+                .getEmail()
+                .equals(email)) {
+
+            throw new UnauthorizedException(
+                    "You cannot delete this expense");
+        }
 
         expenseRepository.delete(expense);
     }
