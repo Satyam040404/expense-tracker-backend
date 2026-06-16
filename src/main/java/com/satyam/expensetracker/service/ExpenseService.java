@@ -6,8 +6,6 @@ import com.satyam.expensetracker.repository.ExpenseRepository;
 import com.satyam.expensetracker.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.satyam.expensetracker.exception.ResourceNotFoundException;
-import com.satyam.expensetracker.entity.User;
-import com.satyam.expensetracker.repository.UserRepository;
 import com.satyam.expensetracker.security.CurrentUserHolder;
 import java.util.List;
 import com.satyam.expensetracker.exception.UnauthorizedException;
@@ -52,10 +50,6 @@ public class ExpenseService {
         expense.setUser(user);
 
         return expenseRepository.save(expense);
-    }
-
-    public List<Expense> getExpensesByUser(Long userId) {
-        return expenseRepository.findByUserId(userId);
     }
     public Expense updateExpense(
             Long expenseId,

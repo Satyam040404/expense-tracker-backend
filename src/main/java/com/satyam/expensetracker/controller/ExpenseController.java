@@ -22,10 +22,7 @@ public class ExpenseController {
 
         return expenseService.addExpense(expense);
     }
-    @GetMapping("/{userId}")
-    public List<Expense> getExpenses(@PathVariable Long userId) {
-        return expenseService.getExpensesByUser(userId);
-    }
+
     @GetMapping("/me")
     public List<Expense> getMyExpenses() {
 
